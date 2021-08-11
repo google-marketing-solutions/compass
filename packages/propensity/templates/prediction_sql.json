@@ -1,0 +1,11 @@
+{
+  "model_path": "project.dataset.model",
+  "output_table_path": "project.dataset.scored",
+  "features_table_path": "project.dataset.table",
+  "feature_columns": [
+    "col1",
+    "col2",
+    "col3"
+  ],
+  "target_column": "label"
+}

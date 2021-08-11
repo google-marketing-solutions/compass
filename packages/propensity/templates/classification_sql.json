@@ -1,0 +1,12 @@
+{
+  "model_path": "project.dataset.model",
+  "model_type": "LOGISTIC_REG",
+  "auto_class_weights": "TRUE",
+  "feature_columns": [
+    "col1",
+    "col2",
+    "col3"
+  ],
+  "target_column": "label",
+  "features_table_path": "project.dataset.table"
+}
