@@ -44,7 +44,7 @@ class ModelTest(absltest.TestCase):
         display, 'display', autospec=True).start()
     self.model = model.PropensityModel(self.mock_bigquery_utils, _MODEL_PARAMS)
     self.mock_query_value = self.model.bq_client.run_query.return_value
-    self.mock_df = self.mock_query_value.to_dataframe
+    self.mock_df = self.mock_query_value.result.return_value.to_dataframe
 
   def test_train_returns_job_result_as_dataframe(self):
     train_sql_template = """
@@ -91,14 +91,15 @@ class ModelTest(absltest.TestCase):
       actual_result = self.model.get_feature_info()
     pd.testing.assert_frame_equal(actual_result, expected_result)
 
-  def test_evaluate_returns_job_results_as_dataframe(self):
-    evaluation_sql_template = """
+  def test_evaluate_returns_job_list_of_eval_metrics_dataframes(self):
+    sql_template = """
       SELECT
         *
       FROM ML.EVALUATE(MODEL `{{ model_path }}`);
     """
+
     params = {'eval_table_path': 'project.dataset.model'}
-    expected_result = pd.DataFrame([{
+    evaluation_metrics = pd.DataFrame([{
         'precision': {
             0: 0.02
         },
@@ -118,12 +119,33 @@ class ModelTest(absltest.TestCase):
             0: 0.61
         }
     }])
-    self.mock_df.return_value = expected_result
+    confusion_matrix = pd.DataFrame([{
+        'expected_label': 'false',
+        'FALSE': '5',
+        'TRUE': '4'
+    }, {
+        'expected_label': 'true',
+        'FALSE': '0',
+        'TRUE': '2'
+    }])
+    roc_curve = pd.DataFrame([{
+        'threshold': '0.5',
+        'recall': '0.1',
+        'false_positive_rate': '0.01',
+        'true_positives': '0.5',
+        'false_positives': '1',
+        'true_negatives': '9',
+        'false_negatives': '1',
+        'precision': '0.3'
+    }])
+    expected_dataframes = [evaluation_metrics, confusion_matrix, roc_curve]
+    self.mock_df.side_effect = expected_dataframes
 
-    with mock.patch('builtins.open',
-                    mock.mock_open(read_data=evaluation_sql_template)):
-      actual_result = self.model.evaluate(eval_params=params)
-    pd.testing.assert_frame_equal(actual_result, expected_result)
+    with mock.patch('builtins.open', mock.mock_open(read_data=sql_template)):
+      actual_dataframes = self.model.evaluate(eval_params=params)
+      for actual, expected in zip(actual_dataframes, expected_dataframes):
+        pd.testing.assert_frame_equal(actual, expected)
+    self.assertEqual(len(actual_dataframes), len(expected_dataframes))
 
   def test_predict_returns_returns_empty_row_iterator(self):
     predict_sql_template = inspect.cleandoc(

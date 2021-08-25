@@ -12,21 +12,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# SQL Jinja template to evaluate classification model.
+# SQL Jinja template to produce multiple metrics for classification model.
+# These metrics include:
+#  - threshold
+#  - recall
+#  - false_positive_rate
+#  - true_positives
+#  - false_positives
+#  - true_negatives
+#  - false_negatives
 #
 # Args:
 #  model_path: Full path to model in BigQuery. Ex: project.dataset.model.
 #  eval_table_path: Full path to evaluation table in BigQuery.
-#    Ex: project.dataset.eval_table.
-#  threshold: A custom threshold to be used for evaluation. For more details,
-#   refer to https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-evaluate#eval_threshold
 
 SELECT
-  *
-FROM ML.EVALUATE(MODEL `{{ model_path }}`
-{% if eval_table_path %}
- ,(SELECT * FROM `{{ eval_table_path }}`),
-  {% if threshold %}
-   STRUCT({{ threshold }} AS threshold)
-  {% endif %}
-{% endif %});
+  *,
+  true_positives / (true_positives + false_positives) AS precision
+FROM
+  ML.ROC_CURVE(MODEL `{{ model_path }}`,
+    TABLE `{{ eval_table_path }}`,
+    GENERATE_ARRAY(0.1, 0.8, 0.01));

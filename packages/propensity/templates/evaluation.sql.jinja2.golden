@@ -24,5 +24,4 @@
 SELECT
   *
 FROM ML.EVALUATE(MODEL `project.dataset.model`
-
 );

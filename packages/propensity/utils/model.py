@@ -129,7 +129,7 @@ class PropensityModel:
         **train_params)
     training_job = self.bq_client.run_query(sql)
     self._display_model_url()
-    return training_job.to_dataframe()
+    return training_job.result().to_dataframe()
 
   def get_feature_info(self,
                        model_path: Optional[str] = None,
@@ -155,11 +155,11 @@ class PropensityModel:
         template_name='features_info',
         verbose=verbose,
         **params)
-    return self.bq_client.run_query(sql).to_dataframe()
+    return self.bq_client.run_query(sql).result().to_dataframe()
 
   def evaluate(self,
                eval_params: Optional[Mapping[str, Union[str, float]]] = None,
-               verbose: bool = False) -> pd.DataFrame:
+               verbose: bool = False) -> List[pd.DataFrame]:
     """Evaluates BigQuery ML trained model.
 
     Args:
@@ -168,17 +168,23 @@ class PropensityModel:
       verbose: If set true, prints parsed SQL content.
 
     Returns:
-      Pandas DataFrame containing model's performance statistics.
+      List of DataFrames containing model's evaluation, confusion matrix and ROC
+      curve metrics.
     """
     params = {'model_path': self.params['model_path']}
     if eval_params:
       params.update(eval_params)
-    sql = utils.render_jinja_sql(
-        template_dir=_TEMPLATES_DIR,
-        template_name='evaluation',
-        verbose=verbose,
-        **params)
-    return self.bq_client.run_query(sql).to_dataframe()
+
+    eval_dataframes = []
+    for template in ['evaluation', 'confustion_matrix', 'roc_curve']:
+      sql = utils.render_jinja_sql(
+          template_dir=_TEMPLATES_DIR,
+          template_name=template,
+          verbose=verbose,
+          **params)
+      dataframe = self.bq_client.run_query(sql).result().to_dataframe()
+      eval_dataframes.append(dataframe)
+    return eval_dataframes
 
   def predict(self,
               params: Mapping[str, Union[str, float]],

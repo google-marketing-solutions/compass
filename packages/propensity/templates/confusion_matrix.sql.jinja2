@@ -12,21 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# SQL Jinja template to evaluate classification model.
+# SQL Jinja template to produce confusion matrix for classification model.
 #
 # Args:
 #  model_path: Full path to model in BigQuery. Ex: project.dataset.model.
 #  eval_table_path: Full path to evaluation table in BigQuery.
-#    Ex: project.dataset.eval_table.
-#  threshold: A custom threshold to be used for evaluation. For more details,
-#   refer to https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-evaluate#eval_threshold
 
 SELECT
   *
-FROM ML.EVALUATE(MODEL `{{ model_path }}`
-{% if eval_table_path %}
- ,(SELECT * FROM `{{ eval_table_path }}`),
-  {% if threshold %}
-   STRUCT({{ threshold }} AS threshold)
-  {% endif %}
-{% endif %});
+FROM ML.CONFUSION_MATRIX(MODEL `{{ model_path }}`,
+   (SELECT * FROM `{{ eval_table_path }}`));

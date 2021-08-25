@@ -1,0 +1,4 @@
+{
+  "model_path": "project.dataset.model",
+  "eval_table_path": "project.dataset.eval_table"
+}
