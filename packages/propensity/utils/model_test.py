@@ -142,7 +142,7 @@ class ModelTest(absltest.TestCase):
     self.mock_df.side_effect = expected_dataframes
 
     with mock.patch('builtins.open', mock.mock_open(read_data=sql_template)):
-      actual_dataframes = self.model.evaluate(eval_params=params)
+      actual_dataframes = self.model.evaluate(params=params)
       for actual, expected in zip(actual_dataframes, expected_dataframes):
         pd.testing.assert_frame_equal(actual, expected)
     self.assertEqual(len(actual_dataframes), len(expected_dataframes))

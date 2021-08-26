@@ -17,7 +17,7 @@ import enum
 import logging
 import os
 import sys
-from typing import List, Mapping, Optional, Union
+from typing import Dict, List, Mapping, Optional, Union
 from IPython.core import display
 import pandas as pd
 
@@ -158,22 +158,22 @@ class PropensityModel:
     return self.bq_client.run_query(sql).result().to_dataframe()
 
   def evaluate(self,
-               eval_params: Optional[Mapping[str, Union[str, float]]] = None,
+               params: Optional[Mapping[str, Union[str, float]]] = None,
                verbose: bool = False) -> List[pd.DataFrame]:
     """Evaluates BigQuery ML trained model.
 
     Args:
-      eval_params: Additional evaluation parameters containing evaluation
-        dataset name and threshold value.
+      params: Additional evaluation parameters containing evaluation dataset
+        name and threshold value.
       verbose: If set true, prints parsed SQL content.
 
     Returns:
       List of DataFrames containing model's evaluation, confusion matrix and ROC
       curve metrics.
     """
-    params = {'model_path': self.params['model_path']}
+    eval_params = {'model_path': self.params['model_path']}
     if eval_params:
-      params.update(eval_params)
+      eval_params.update(params)
 
     eval_dataframes = []
     for template in ['evaluation', 'confustion_matrix', 'roc_curve']:
@@ -181,27 +181,33 @@ class PropensityModel:
           template_dir=_TEMPLATES_DIR,
           template_name=template,
           verbose=verbose,
-          **params)
+          **eval_params)
       dataframe = self.bq_client.run_query(sql).result().to_dataframe()
       eval_dataframes.append(dataframe)
     return eval_dataframes
 
   def predict(self,
-              params: Mapping[str, Union[str, float]],
+              params: Dict[str, Union[str, float]],
+              overwrite_table: Optional[bool] = True,
               verbose: Optional[bool] = False) -> None:
     """Executes prediction job using BigQuery ML trained model.
 
     Args:
       params: Prediction parameters.
+      overwrite_table: If true, prediction results table is overwritten each
+        time prediction is made.
       verbose: If set true, prints parsed SQL content.
 
     Returns:
       Prediction BigQuery job results as Pandas DataFrame.
     """
+    predict_params = params
+    if overwrite_table:
+      predict_params.update({'overwrite_table': overwrite_table})
     sql = utils.render_jinja_sql(
         template_dir=_TEMPLATES_DIR,
         template_name='prediction',
         verbose=verbose,
-        **params)
+        **predict_params)
     # TODO(): Add a prediction table link post prediction job.
     self.bq_client.run_query(sql)
