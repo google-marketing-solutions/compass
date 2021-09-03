@@ -36,9 +36,11 @@
 CREATE OR REPLACE MODEL
   `{{ model_path }}`
 OPTIONS(
-  MODEL_TYPE='{{ model_type }}',
-  INPUT_LABEL_COLS=['{{ target_column }}'],
-  AUTO_CLASS_WEIGHTS={{ auto_class_weights }}
+  MODEL_TYPE='{{ model_type }}'
+  ,INPUT_LABEL_COLS=['{{ target_column }}']
+{% if auto_class_weights %}
+  ,AUTO_CLASS_WEIGHTS={{ auto_class_weights }}
+{% endif %}
 {% if model_type == 'AUTOML_CLASSIFIER' %}
   ,BUDGET_HOURS=1
 {% endif %}
