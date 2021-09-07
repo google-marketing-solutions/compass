@@ -15,7 +15,6 @@
 
 import enum
 import logging
-import os
 import sys
 from typing import Dict, List, Mapping, Optional, Union
 from IPython.core import display
@@ -103,9 +102,7 @@ class PropensityModel:
 
     logging.info('Finished training. Model can be access via following URL:')
     # Make sure to write html tag only in Jupyter notebook environment.
-    # TODO(): Apply cleaner jupyter environment detector for
-    # displaying url links
-    if os.environ.get('USER') == 'jupyter':
+    if 'ipykernel' in sys.modules:
       display.display(display.HTML(html_tag))
     else:
       logging.info(url)
