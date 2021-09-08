@@ -1,39 +1,347 @@
-# Generic Propensity Modeling notebooks
+# Propensity Modeling and Media Activation Notebooks
 
-This folder contains Python notebook templates for end-to-end propensity
-modelling. These templates rely on
-[gps_building_blocks](https://github.com/google/gps_building_blocks) library
-to build step-by-step executable notebooks.
+This folder contains Python Notebook templates for building an end-to-end
+propensity modelling solution using a dataset like GA360, Firebase or CRM and
+use the propensity predictions to design, activate and measure the impact of a
+Google media campaign. These templates rely on the python modules open sourced
+in [gps_building_blocks](https://github.com/google/gps_building_blocks).
 
-1. Data Audit and Exploratory Data Analysis.
-2. Preparing ML ready dataset.
-3. Splitting and balancing ML datasets.
-4. Creating ML propensity model.
-5. Model Evaluation and Diagnostics.
-6. Scoring.
-7. Experiment design and audience generation.
-8. Audience upload.
-9. Post-campaign analysis.
+## What is a Propensity Model?
+A propensity model allows us to estimate the propensity (probability) of some
+event (for example, conversion, churn, etc.) happening during a well-defined
+time period into the future (called *prediction window*) based on some
+historical information captured during a well-defined time window in the past
+(called *lookback window*).
 
-## Description of templates
+<img src="images/propensity_model.png" width="100%">
+TODO(): replace this with a diagram having better visibility
+
+* In the context of a business, these future events can be a customer performing
+some action such as a purchase, subscription, churn etc.
+* The estimated propensity scores can be used to make data-driven decisions,
+such as improving remarketing or acquisition campaigns, in order to optimize key
+business objectives, such as increase conversions, reduce churn and reduce CPA.
+* Also, the insights extracted from a propensity model would be helpful to
+understand the key ‘drivers’ that are highly correlated with (or caused on) the
+target event of interest, some of which would lead the business to take useful
+actions (called actionable insights).
+
+Requirements:
+In order to build a propensity model, we need the client’s 1P dataset such as a
+CRM, GA360 or Firebase dataset that captures its customers’ data such as
+demographics and transactional and browsing behaviour over time. This data
+should include a sufficient number of examples of the action we try to predict
+(called the target, label or response) and the fields that capture user
+behaviour and characteristics prior to that action. It is recommended to use at
+least one year of data (ideally over 2 years) to capture seasonal patterns of
+the user behaviour.
+
+Example:
+Typically we work with BigQuery export of GA360 data (that captures customers’
+behaviour of the Client’s website), with the format and export instructions
+described [here](https://support.google.com/analytics/answer/3437618?hl=en&ref_topic=3416089).
+In GA360 data, an example of a target definition could be
+`hits.eCommerceAction.action_type = '6'` (which reflects a transaction)
+and user behaviour could be indicated by fields such as `totals.hits`,
+`totals.timeOnSite`, `trafficSource.source` and `device.deviceCategory`.
+
+## How do we translate the propensity modeling into a Machine Learning problem?
+
+The propensity modelling is generally formulated as a classification ML problem.
+Typically, binary classification is used to model the propensity of a binary
+event such as purchase vs non-purchase, and multi-class classification to model
+the propensity of a multinomial event. In the case of a binary event, for each
+`user id`, we generate a propensity score which can be used to rank and segment
+the customers for more personalized marketing as explained towards the end of
+this document.
+
+## Steps of building a Propensity Model
+
+Assuming the data (CRM, Firebase or GA360) is already available as a BigQuery
+table, generally, the following steps are involved in building and activating an
+end to end propensity modeling solution to drive a Google marketing use case.
+This solution contains python notebook templates to support each of these steps.
+
+1. Data audit and exploratory data analysis (Notebook)
+2. ML data preparation ([Notebook](2.ml_data_preparation.ipynb))
+3. ML data preprocessing ([Notebook](3.ml_data_preprocessing.ipynb))
+4. ML model training ([Notebook](4.model_training.ipynb))
+5. ML model evaluation and diagnostics ([Notebook](5.model_evaluation_and_diagnostics.ipynb))
+6. Media experiment design ([Notebook](6.media_experiment_design.ipynb))
+7. Batch scoring ([Notebook](7.batch_scoring.ipynb))
+8. Audience generation and uploading ([Notebook](8.audience_upload.ipynb))
+9. Automated scoring and media activation (Notebook)
+10. Post-campaign Analysis (Notebook)
+
+In the following sections we discuss these steps and introduce the corresponding
+Notebooks in detail.
+
+### 1. Data audit and general exploratory data analysis
+
+Notebook: TODO(): Link after the Notebook is added
+
+This step analyses the original input data at a high level to make sure the
+required variables and values available for the required time period to
+create an ML model to solve the business problem in hand.
+
+This step involves the following steps:
+TODO(): Add content after the Notebook is submitted
+
+### 2. ML data preparation
+
+Notebook: [2.ml_data_preparation.ipynb](2.ml_data_preparation.ipynb)
+
+Usually, creation of an ML dataset from customer behaviour data such as GA360,
+Firebase or CRM involves:
+
+* First creating a single data snapshot of users with respect to a given
+calendar date *d*. This snapshot consists of:
+  * Instances: for example, all the users who have done some action in a website
+  up until the date *d*.
+  * Features: for each selected instance, aggregated behavior in a well-defined
+  time period in the past from day *d* called *lookback window*.
+  * Labels: for each selected instance, the value we would like to predict
+  (e.g. purchased or not purchased) in a well-defined time period into the
+  future from the day *d* called *prediction window*.
+* Second, generating a series of such snapshots over time to capture recency,
+frequency and changing behaviour of users, seasonality and other trends/events
+over time. This is vital in a period like Covid-19 to capture changing user
+behaviour which is also known as the Concept Drift. Also, with multiple
+snapshots, we would be able to generate more data for our ML model with limited
+original data.
+
+The quality of an ML model greatly depends on the quality of the input data.
+Since different datasets contain different data issues such as missing,
+incorrect and inconsistent data, it is vital to do a deep data exploration and
+select the most consistent and meaningful variables/row data to create an ML
+dataset.
+
+In order to create an accurate and rich ML dataset in a fast way we use
+[ML Windowing Pipeline (MLWP)](https://github.com/google/gps_building_blocks/tree/master/py/gps_building_blocks/ml/data_prep/ml_windowing_pipeline) and
+[ML Data Visualizer](https://github.com/google/gps_building_blocks/tree/master/py/gps_building_blocks/ml/data_prep/data_visualizer) modules.
+
+#### ML Windowing Pipeline + ML Data Visualizer
+
+Creation of an ML datasets with multiple snapshots usually takes about 80% of
+the project time (the major bottleneck of the ML model building process). Use of
+MLWP together with ML Data Visualizer module can help to reduce this time from
+2-3 weeks to 1-2 days.
+
+ML Windowing Pipeline creates an ML dataset by taking multiple data snapshots
+over time in a very fast way. It has been built to run on Google Cloud BigQuery
+and the input data is expected to be available as a BigQuery table. The
+developer can simply specify the time-related inputs (such as starting and
+ending dates of the snapshots and sizes of the *lookback*, *prediction* and
+*sliding windows*), and variable names and aggregate functions to generate
+features and labels, when using this module to create an ML dataset.
+
+Data Visualizer module automatically generates plots visualizing the quality and
+consistency of raw input data to help selecting right variables to generate the
+ML dataset and also visualize the generated ML data to further identify issues
+such as label leakage.
+
+This step consists of running the following sub steps as implemented in the
+above Notebook:
 
 
-### 4. Splitting and balancing ML datasets.
+* 2.1. MLWP Data Extraction pipeline: extracts and formats the original data from
+the BigQuery table into several temporary tables for further processing.
+* 2.2: MLWP Exploration Pipeline: outputs facts (original variables converted into
+*user_id*, *time_stamp*, *variable* and *value* format, called *facts*) and ML
+instances into BigQuery tables for data exploration and analysis.
+* 2.3.1: Data Viz Visualize Instances: generates the following plots on ML
+  instances:
+    * plots with the number of total instances, number of positive instances and
+    proportion of positive instances for each snapshot. These plots are helpful to
+    understand how the label is distributed over time, any seasonality and trends,
+    and whether there are any inconsistencies. Based on this we can drop specific
+    periods of snapshots having any data issues and consider what additional
+    features to add to capture the seasonality or any trends of the label over
+    time.
+    * class specific distribution plots for the *days_since_first_activity*
+    (corresponds to tenure) and *days_since_latest_activity* (corresponds to
+    recency) features in the Instance table. From these plots, we can determine a
+    reasonable *lookback window* period and to reason whether it’s worth only
+    using customers having a particular history and recency for modeling.
+* 2.3.2. Data Viz Visualize Facts: generates plots of numerical and categorical
+  *fact variables*, which can be used to explore their validity and distribution
+  over time. Based on that we can make decisions such as which *facts variables*
+  (and which levels in categorical *fact variables*) to use to generate features
+  in the remaining steps.
+* 2.4: MLWP Data Windowing Pipeline: segments the user data into multiple,
+potentially overlapping time windows, with each window containing a
+*lookback window* and a *prediction window*.
+* 2.5: Run Feature Generation Pipeline: generates features from the windows of
+data computed in the previous step and outputs to a table in BigQuery.
+* 2.6: Data Viz Visualize Features: visualizes the statistics calculated from the
+Features table in BigQuery. The plots include class-specific distribution plots
+of numerical and categorical features, which can be used to explore the validity
+of the features and potentially identify issues such as label leakage, and the
+distribution of the features over time helping to understand the consistency.
+Based on these insights the developer can select only the valid features for
+training the model.
+
+### 3. ML data preprocessing
+
+Notebook: [3.ml_data_preprocessing.ipynb] (3.ml_data_preprocessing.ipynb)
+
+This step involves the following tasks
+TODO(): update when the Notebook is submitted:
+
+#### 3.1. Data splitting
+Once we are happy with the extracted ML-ready dataset, it can be separated into
+Training, Validation and Testing datasets as shown in the following diagram:
+
+TODO(): add a diagramon data splitting.
+
+The ML examples extracted from the *development period* are divided into
+*Training* (e.g. 80% of instances), *Validation* (e.g 10% of instances) and
+*Testing* (in-time) (e.g. 10% instances) partitions, such that each of these
+data partition contain a mutually exclusive random subset of instances. We
+called this dataset as *ML development dataset*. In addition to the in-time
+Testing dataset, an out-of-time Testing dataset is also created to specially
+test the model performance in recent times.
+
+#### 3.1. Data balancing
+
+If the percentage of positive examples in the dataset is < 1% and the number of
+positive examples are limited compared to the negative examples, it can be
+beneficial to balance training datasets to have ~1% of positive examples by
+randomly doping the negative instances. While doing this we make sure to only
+balance the training dataset partition and keep the both validation and testing
+partitions in their original imbalance form.
+
+### 4. ML Model training
+
+Notebook: [4.model_training.ipynb](4.model_training.ipynb)
+
+Creating an ML model generally can be a complicated, iterative and long process
+due to the algorithm selection and hyper-parameter tuning steps.
+However, in this solution, we use [GCP BQML tool with the AutoML models](https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-create-automl)
+option (by default), which uses GCP AutoML to automatically handles feature
+preprocessing and hyper-parameter tuning for multiple algorithms in parallel to
+train the best model with respect to a given performance metric such as AUC ROC.
+
+We use *ML development dataset* to crested in the previous step to develop the
+model with the *Training*, *Validation* and *Testing* partitions. AutoML uses
+the *Training* and *Validation* partitions for hyper-parameter tuning and
+algorithm selection, and reports the final results on the *Testing* partition
+with the final model trained on the whole *ML development dataset*.
+
+### 5. Model evaluation and diagnostics.
+
+Notebook: [5.model_evaluation_and_diagnostics.ipynb](5.model_evaluation_and_diagnostics.ipynb)
+
+It is important to diagnose a model thoroughly to make sure it’s reasonable (a
+single performance metric such as overall accuracy or AUC doesn’t give the full
+picture of the model) and to generate new business insights for the client. This
+step uses the [Binary Classification Diagnostics](https://github.com/google/gps_building_blocks/tree/master/py/gps_building_blocks/ml/diagnostics)
+module to generate a variety of stats and plots helping to understand the
+performance for different propensity segments, diagnose the model for issues
+such as label leakages and generate business insights that can be shared with
+the clients directly.
+
+The main diagnostics generated by this step as follows:
+
+* Model performance with respect to a variety of metrics such as:
+  * Area under curve ROC
+  * Area under curve Precision-Recall
+  * Overall Accuracy
+  * True positive rate (Recall, Sensitivity)
+  * True_negative_rate (Specificity)
+  * Precision
+  * F1_score
+* Precision vs Recall curve
+* Precision vs (1-Specificity) curve
+* Predicted probability distributions for both classes
+* Precision and Recall plots for different predicted probability bins
+* Precision and Recall plots for different cumulative predicted probability bins
+* Plots showing the relationship between each feature and the predicted
+probability (helpful to extract new business insights and identify issued such
+as label leakages)
+
+TODO(): add a diagram of the above plots combined.
+
+## 6. Media experiment design
+
+Notebook: [6.media_experiment_design.ipynb] (6.media_experiment_design.ipynb)
+
+In this step we designed a statistically sound media experiment to activate the
+developed propensity model in order to optimize a Google media campaign.
+
+#### Experiment design I: Different propensity groups
+
+One way to use the output from a propensity model to optimize marketing is to
+first define different audience groups based on the predicted probabilities
+(such as High, Medium and Low propensity groups) and then test the same or
+different marketing strategies with those. This strategy is more useful to
+understand how different propensity groups respond to remarketing campaigns.
+
+Here we estimate the statistical sample sizes required for different groups
+(bins) of the predicted probabilities based on different combinations of the
+expected minimum uplift/effect size, statistical power and statistical
+confidence levels specified as input parameters. Based on the estimated sample
+sizes and the available sizes one can decide what setting (expected minimum
+uplift/effect size at a given statistical power and a confidence level) to be
+selected for the experiment. Then the selected sample sizes could be used to set
+Test and Control cohorts from each propensity group to implement the media
+experiment.
+
+#### Experiment design II: Top propensity group
+
+Another way to use the output from a propensity model to optimize marketing is
+to target the top *X%* of users having the highest predicted probability in a
+remarketing campaign or an acquisition campaigns with the similar audience
+strategy.
+
+Here we estimates the statistical sample sizes required for different cumulative
+groups (bins) of the predicted probabilities (top *X%*, top *2X%* and so on)
+based on different combinations of the expected minimum uplift/effect size,
+statistical power and statistical confidence levels specified as input
+parameters. Based on the estimated sample sizes and the available sizes one can
+decide what setting (what top *X%* of users with the expected minimum
+uplift/effect size at a given statistical power and a confidence level) to be
+selected for the experiment. Then the selected sample size could be used to set
+Test and Control cohorts from the top *X%* to implement the media experiment.
+
+### 7. Batch scoring
+
+Notebook: [7.batch_scoring.ipynb](7.batch_scoring.ipynb)
+
+In this step we used the developed propensity model to score new ML instances to
+predict their propensities. This step consists of the following sub steps:
+
+* Create the ML instances and features for scoring using the MLWP
+* Score the created instances using the developed model and uploaded the
+predictions into a table in GCP BigQuery
+
+### 8. Audience creation and upload
+
+Notebook: [8.audience_upload.ipynb] (8.audience_upload.ipynb)
+
+This step first uses the propensity scores generated of the scored instances in
+Step 7 to create the audience groups according to the media experiment design
+generated in Step 6. Then it uploads these audiences to Google ad systems.
+
+The uploaded audiences could be activated as acquisition or remarketing
+campaigns in the selected Ad product (Search, Display and YT). If any control
+groups have been generated those are in BigQuery to be used at the analysis
+stage.
+
+### 9. Automated scoring and media activation
+
+TODO(): add content when the Notebook is submitted.
 
 
-#### Overview
+### 10. Media experiment analysis
 
-Before we train Machine Learning models we need to prepare appropriate
-datasets for training, validation and testing workflows.
-We also might want to make other
-adjustments (for example deal with missing values, outliers and class imbalance).
-This module provides utilities and templates for handling those situation.
+TODO(): add content when the Notebook is submitted.
 
-#### Objectives
 
-1. Filter and select relevant data.
-2. Provide data balancing strategies and create balanced dataset.
-3. Provide data splitting strategies and create separate datasets for TRAIN/VALIDATION/TEST.
 
-#### Requirements
+
+
+
+
+
 
