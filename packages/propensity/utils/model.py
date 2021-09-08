@@ -28,7 +28,6 @@ logging.basicConfig(
 
 _TEMPLATES_DIR = 'templates'
 _CLOUD_CONSOLE_URL = 'https://console.cloud.google.com/bigquery?project='
-
 _ParamsType = Mapping[str, Union[str, List[str], Mapping[str, str]]]
 
 
@@ -91,18 +90,17 @@ class PropensityModel:
       self._validate_columns(column)
     self._validate_model_type(params['model_type'])
 
-  def _display_model_url(self) -> None:
-    """Displays Cloud Console URL for BigQuery trained model."""
-    model_path = str(self.params['model_path'])
-    # Extract project id, dataset and model name from model path.
-    project_id, dataset, model_name = model_path.split('.')
-    url = (f'{_CLOUD_CONSOLE_URL}{project_id}&ws=&p={project_id}'
-           f'&d={dataset}&m={model_name}&page=model')
-    html_tag = f'<a href={url}>BigQuery model link</a>'
+  def _display_url(self, url_part: str, text: str = 'Access URL.') -> None:
+    """Displays newly created BigQuery Dataset, Table or Model URLs.
 
-    logging.info('Finished training. Model can be access via following URL:')
+    Args:
+      url_part: Newly generated URL part concatenated to _CLOUD_CONSOLE_URL.
+      text: URL text to show to user.
+    """
     # Make sure to write html tag only in Jupyter notebook environment.
+    url = f'{_CLOUD_CONSOLE_URL}{url_part}'
     if 'ipykernel' in sys.modules:
+      html_tag = f'<a href={url}>{text}</a>'
       display.display(display.HTML(html_tag))
     else:
       logging.info(url)
@@ -125,7 +123,12 @@ class PropensityModel:
         verbose=verbose,
         **train_params)
     training_job = self.bq_client.run_query(sql)
-    self._display_model_url()
+
+    project_id, dataset, model_name = str(self.params['model_path']).split('.')
+    url = (f'{project_id}&ws=&p={project_id}'
+           f'&d={dataset}&m={model_name}&page=model')
+    logging.info('Finished training. Model can be access via following URL:')
+    self._display_url(url, 'BigQuery Model.')
     return training_job.result().to_dataframe()
 
   def get_feature_info(self,
@@ -206,5 +209,8 @@ class PropensityModel:
         template_name='prediction',
         verbose=verbose,
         **predict_params)
-    # TODO(): Add a prediction table link post prediction job.
     self.bq_client.run_query(sql)
+    project_id, dataset, table = str(params['output_table_path']).split('.')
+    url = f'&d={dataset}&p={project_id}&t={table}&page=table'
+    logging.info('Finished scoring. Table can be access via following URL:')
+    self._display_url(url, 'Scoring Table.')
