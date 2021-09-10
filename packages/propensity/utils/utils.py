@@ -24,7 +24,7 @@ import numpy as np
 logging.basicConfig(
     format='%(levelname)s: %(message)s', level=logging.INFO, stream=sys.stdout)
 
-_VISUALIATION_OUTPUT_DIR = 'visualization_outputs'
+_VISUALIZATION_OUTPUT_DIR = 'visualization_outputs'
 
 
 def create_folder(folder_name: str) -> pathlib.Path:
@@ -49,7 +49,7 @@ def save_to_pdf(filename: str, plots: Union[np.ndarray,
   Raises:
     TypeError if plots are not in List[np.ndarray] or np.ndarray type.
   """
-  abs_path = create_folder(_VISUALIATION_OUTPUT_DIR)
+  abs_path = create_folder(_VISUALIZATION_OUTPUT_DIR)
   pdf_path = pathlib.Path(abs_path, filename)
   logging.info('Creating PDF file in "%s"', pdf_path)
   pdf = backend_pdf.PdfPages(pdf_path)
