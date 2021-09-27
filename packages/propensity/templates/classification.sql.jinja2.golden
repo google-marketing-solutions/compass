@@ -31,6 +31,10 @@
 #  data_split_col: A column  used to split the data. This column cannot be used
 #    as a feature or label, and will be excluded from features automatically.
 #    For more detials, refer to https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-create#data_split_col
+#  budget_hours: Sets the training budget for AutoML Tables training,
+#    specified in hours. Defaults to 1.0 and must be between 1.0 and 72.0.
+#    This option can only be used if MODEL_TYPE is
+#    AUTOML_REGRESSOR or AUTOML_CLASSIFIER.
 
 
 CREATE OR REPLACE MODEL
