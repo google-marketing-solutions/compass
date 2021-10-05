@@ -19,8 +19,8 @@
 # Inspect metadata of the dataset.
 #
 # Args:
-#   PROJECT_NAME: name of the project with inout data data.
-#   dataset: name of the bigquery dataset with google analytics data.
+#   dataset_path: Full path to BigQuery dataset with Google Analytics data.
+#.  Ex: project.dataset.
 #
 # Output schema:
 #   table_catalog: STRING
@@ -33,4 +33,4 @@
 SELECT
       *
 FROM
-`bigquery-public-data.google_analytics_sample`.INFORMATION_SCHEMA.TABLE_OPTIONS
+`project.dataset`.INFORMATION_SCHEMA.TABLE_OPTIONS;

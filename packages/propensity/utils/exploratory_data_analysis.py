@@ -34,10 +34,10 @@ _ParamsType = Dict[str, Union[int, float, str]]
 class Analysis:
   """Interacts with BigQuery to analyse data in the context of building ML models."""
 
-  def __init__(self, bq_client: bigquery_utils.BigQueryUtils,
+  def __init__(self, bq_utils: bigquery_utils.BigQueryUtils,
                params: _ParamsType):
     self.params = params
-    self.bq_client = bq_client
+    self.bq_utils = bq_utils
 
   def _update_params_with_defaults(self, params: _ParamsType):
     """Populates parameters not specified by the user with default values.
@@ -63,7 +63,7 @@ class Analysis:
         template_dir=_TEMPLATES_DIR,
         template_name='dataset_description',
         **self.params)
-    df_table_options = self.bq_client.run_query(sql).to_dataframe()
+    df_table_options = self.bq_utils.run_query(sql).to_dataframe()
     description = df_table_options['option_value'][0]
     if self.params['verbose']:
       # Will display outputs only if verbose is True

@@ -38,7 +38,7 @@ class EdaTest(absltest.TestCase):
         display, 'display', autospec=True).start()
     self.exploratory_data_analysis = exploratory_data_analysis.Analysis(
         self.mock_bigquery_utils, _EDA_PARAMS)
-    self.mock_query_value = self.exploratory_data_analysis.bq_client.run_query.return_value
+    self.mock_query_value = self.exploratory_data_analysis.bq_utils.run_query.return_value
     self.mock_df = self.mock_query_value.to_dataframe
 
   def test_get_ds_description_returns_job_result_as_dataframe(self):
@@ -46,18 +46,18 @@ class EdaTest(absltest.TestCase):
     SELECT
           *
     FROM
-    `{{dataset}}`.INFORMATION_SCHEMA.TABLE_OPTIONS;
+    `{{dataset_path}}`.INFORMATION_SCHEMA.TABLE_OPTIONS;
 
     """
     table_options = {
         'table_catalog': {
-            0: 'bigquery-public-data'
+            0: 'project'
         },
         'table_schema': {
-            0: 'google_analytics_sample'
+            0: 'dataset'
         },
         'table_name': {
-            0: 'ga_sessions_20170801'
+            0: 'table_20170801'
         },
         'option_name': {
             0: 'description'
@@ -67,10 +67,8 @@ class EdaTest(absltest.TestCase):
         },
         'option_value': {
             0:
-                '"Obfuscated Google Analytics 360 data. It’s a great way to '
-                'look at business data and experiment and learn the benefits '
-                'of analyzing Google Analytics 360 data in BigQuery. Learn '
-                'more at: https://support.google.com/analytics/answer/7586738"'
+                '"Example BigQuery dataset description line 1. '
+                'Description line 2."'
         }
     }
     description = pd.DataFrame(table_options)['option_value'][0]
