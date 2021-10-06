@@ -43,8 +43,8 @@ class ModelTest(absltest.TestCase):
     self.mock_display = mock.patch.object(
         display, 'display', autospec=True).start()
     self.model = model.PropensityModel(self.mock_bigquery_utils, _MODEL_PARAMS)
-    self.mock_query_value = self.model.bq_client.run_query.return_value
-    self.mock_df = self.mock_query_value.result.return_value.to_dataframe
+    self.mock_query = self.model.bq_utils.run_query
+    self.mock_df = self.mock_query.return_value.to_dataframe
 
   def test_train_returns_job_result_as_dataframe(self):
     train_sql_template = """

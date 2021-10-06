@@ -42,10 +42,10 @@ class ModelTypes(enum.Enum):
 class PropensityModel:
   """Interacts with BigQuery ML to create and evaluate propensity models."""
 
-  def __init__(self, bq_client: bigquery_utils.BigQueryUtils,
+  def __init__(self, bq_utils: bigquery_utils.BigQueryUtils,
                params: _ParamsType):
     self.params = params
-    self.bq_client = bq_client
+    self.bq_utils = bq_utils
 
   def _validate_columns(self, column: Union[str, List[str]]) -> None:
     """Validates feature and target columns required for training.
@@ -122,14 +122,14 @@ class PropensityModel:
         template_name='classification',
         verbose=verbose,
         **train_params)
-    training_job = self.bq_client.run_query(sql)
+    training_job = self.bq_utils.run_query(sql)
 
     project_id, dataset, model_name = str(self.params['model_path']).split('.')
     url = (f'{project_id}&ws=&p={project_id}'
            f'&d={dataset}&m={model_name}&page=model')
     logging.info('Finished training. Model can be access via following URL:')
     self._display_url(url, 'BigQuery Model.')
-    return training_job.result().to_dataframe()
+    return training_job.to_dataframe()
 
   def get_feature_info(self,
                        model_path: Optional[str] = None,
@@ -155,7 +155,7 @@ class PropensityModel:
         template_name='features_info',
         verbose=verbose,
         **params)
-    return self.bq_client.run_query(sql).result().to_dataframe()
+    return self.bq_utils.run_query(sql).to_dataframe()
 
   def evaluate(self,
                params: Optional[Mapping[str, Union[str, float]]] = None,
@@ -176,13 +176,13 @@ class PropensityModel:
       eval_params.update(params)
 
     eval_dataframes = []
-    for template in ['evaluation', 'confustion_matrix', 'roc_curve']:
+    for template in ['evaluation', 'confusion_matrix', 'roc_curve']:
       sql = utils.render_jinja_sql(
           template_dir=_TEMPLATES_DIR,
           template_name=template,
           verbose=verbose,
           **eval_params)
-      dataframe = self.bq_client.run_query(sql).result().to_dataframe()
+      dataframe = self.bq_utils.run_query(sql).to_dataframe()
       eval_dataframes.append(dataframe)
     return eval_dataframes
 
@@ -209,7 +209,7 @@ class PropensityModel:
         template_name='prediction',
         verbose=verbose,
         **predict_params)
-    self.bq_client.run_query(sql)
+    self.bq_utils.run_query(sql)
     project_id, dataset, table = str(params['output_table_path']).split('.')
     url = f'&d={dataset}&p={project_id}&t={table}&page=table'
     logging.info('Finished scoring. Table can be access via following URL:')
