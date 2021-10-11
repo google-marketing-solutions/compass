@@ -13,18 +13,72 @@
 # limitations under the License.
 """Propensity model custom utility functions."""
 
+import dataclasses
 import logging
 import pathlib
 import sys
-from typing import List, Union
+from typing import List, Tuple, Union
 
 from matplotlib.backends import backend_pdf
 import numpy as np
+import yaml
+
 
 logging.basicConfig(
     format='%(levelname)s: %(message)s', level=logging.INFO, stream=sys.stdout)
 
 _VISUALIZATION_OUTPUT_DIR = 'visualization_outputs'
+
+_DEFAULT_CONFIGS = 'configs.yaml'
+
+
+@dataclasses.dataclass
+class Configs:
+  """Provides general configs for all Propensity Modeling Notebooks."""
+  project_id: str
+  dataset_name: str
+  table_name: str
+
+
+def get_configs(filename: str) -> Union[Configs, Tuple[Configs, Configs]]:
+  """Gets configuration details from yaml file.
+
+  Args:
+    filename: Relative or full path to config file. If not provided, default
+      config.yaml is used.
+
+  Returns:
+    Tuple of configs for both source or destination GCP project if source
+    configurations are provided. Otherwise, returns configs for only destination
+    GCP project.
+
+  Raises:
+    ValueError: if destination GCP configs are not specified in configs.yaml.
+  """
+  source_configs = None
+  if not filename:
+    filename = _DEFAULT_CONFIGS
+    logging.info('Config file is not provided. Using default configs file.')
+  with open(filename, 'r') as f:
+    contents = yaml.safe_load(f)
+
+  if contents.get('source') is not None:
+    source = contents['source']
+    source_configs = Configs(
+        project_id=source['project_id'],
+        dataset_name=source['dataset_name'],
+        table_name=source['table_name'])
+  if not contents['destination']['project_id']:
+    raise ValueError('Edit configs.yaml and provide destination GCP details.')
+  destination = contents['destination']
+  destination_configs = Configs(
+      project_id=destination['project_id'],
+      dataset_name=destination['dataset_name'],
+      table_name=destination['table_name'])
+  if source_configs is not None:
+    return source_configs, destination_configs
+  else:
+    return destination_configs
 
 
 def create_folder(folder_name: str) -> pathlib.Path:

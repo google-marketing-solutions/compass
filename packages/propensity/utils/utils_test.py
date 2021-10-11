@@ -33,6 +33,58 @@ class UtilsTest(absltest.TestCase):
     self.mock_pdfpages = mock.patch.object(
         backend_pdf, 'PdfPages', autospec=True).start()
 
+  def test_get_configs_returns_source_and_dest_configs(self):
+    test_configs = """
+      source:
+        project_id: 'source_project_id'
+        dataset_name: 'source_dataset_name'
+        table_name: 'source_table_name'
+      destination:
+        project_id: 'destination_project_id'
+        dataset_name: 'destination_dataset_name'
+        table_name: 'destination_table_name'
+    """
+    mock_open = mock.mock_open(read_data=test_configs)
+    with mock.patch('builtins.open', mock_open, create=True):
+      source_configs, dest_configs = utils.get_configs('configs.yaml')
+
+    for config in [source_configs, dest_configs]:
+      self.assertIsInstance(config, utils.Configs)
+      for attr in ['project_id', 'dataset_name', 'table_name']:
+        self.assertTrue(hasattr(config, attr))
+
+  def test_get_configs_returns_dest_configs_only(self):
+    test_configs = """
+      destination:
+        project_id: 'destination_project_id'
+        dataset_name: 'destination_dataset_name'
+        table_name: 'destination_table_name'
+    """
+    mock_open = mock.mock_open(read_data=test_configs)
+    with mock.patch('builtins.open', mock_open, create=True):
+      dest_configs = utils.get_configs('configs.yaml')
+
+    self.assertIsInstance(dest_configs, utils.Configs)
+    for attr in ['project_id', 'dataset_name', 'table_name']:
+      self.assertTrue(hasattr(dest_configs, attr))
+
+  def test_get_configs_raises_error_if_dest_values_not_provided(self):
+    test_configs = """
+      source:
+        project_id: 'source_project_id'
+        dataset_name: 'source_dataset_name'
+        table_name: 'source_table_name'
+      destination:
+        project_id: ''
+        dataset_name: ''
+        table_name: ''
+    """
+    mock_open = mock.mock_open(read_data=test_configs)
+
+    with mock.patch('builtins.open', mock_open, create=True):
+      with self.assertRaises(ValueError):
+        utils.get_configs('configs.yaml')
+
   def test_create_folder_returns_absolute_path(self):
     folder_name = 'test_folder'
     actual_path = utils.create_folder(folder_name)
