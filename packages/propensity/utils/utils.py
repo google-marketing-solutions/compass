@@ -21,8 +21,8 @@ from typing import List, Tuple, Union
 
 from matplotlib.backends import backend_pdf
 import numpy as np
+import pandas as pd
 import yaml
-
 
 logging.basicConfig(
     format='%(levelname)s: %(message)s', level=logging.INFO, stream=sys.stdout)
@@ -116,3 +116,38 @@ def save_to_pdf(filename: str, plots: Union[np.ndarray,
     raise TypeError('Plots list is not supported. Provide either '
                     'List[np.ndarray] or np.ndarray containing pyplot axes.')
   pdf.close()
+
+
+def generate_date_range_stats(timeseries: pd.Series) -> pd.DataFrame:
+  """Generates statistics about the date range and missing days.
+
+  Takes the pandas Series with date values, converts it to datetime,
+  reindexes it using full range of dates and calculates statistics
+  like first date, last date, date range length, missing days.
+
+  Args:
+    timeseries: Column with date values.
+
+  Returns:
+   df_summary: Summary table with date range statistics.
+  """
+  timeseries = pd.to_datetime(timeseries.values)
+  first_day = timeseries.min()
+  last_day = timeseries.max()
+  df_summary = pd.DataFrame({
+      'first_day': [first_day],
+      'last_day': [last_day]
+  })
+  date_range = pd.date_range(start=first_day, end=last_day, freq='D')
+  df_summary['date_range_len'] = len(date_range)
+  df_summary['dates_count'] = len(timeseries.unique())
+  df_summary['date_range'] = df_summary.apply(
+      lambda x: date_range.strftime('%Y-%m-%d').tolist(), axis=1)
+  df_summary['missing_days'] = df_summary.apply(
+      lambda x: (date_range).difference(timeseries).to_list(), axis=1)
+  df_summary['number_missing_days'] = df_summary['date_range_len'] - df_summary[
+      'dates_count']
+  df_summary = df_summary.T
+  df_summary.columns = ['value']
+  return df_summary
+
