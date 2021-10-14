@@ -13,7 +13,7 @@ time period into the future (called *prediction window*) based on historical
 data captured during a well-defined time window in the past (called
 *lookback window*).
 
-<img src="images/propensity_model.gif">
+<img src="images/propensity_model_overview.gif">
 
 * In business context, the *future events* can be a customer performing
   some action such as a purchase, subscription, churn etc.
