@@ -17,7 +17,7 @@ At this moment it supports GA360 data format stored in BigQuery.
 We are planning to enable extending it to firebase data format
 and other sources by modifying SQL templates.
 """
-
+import logging
 from typing import Dict, Tuple, Union
 
 from IPython.display import display
@@ -32,12 +32,19 @@ _ParamsType = Dict[str, Union[int, float, str]]
 
 
 class Analysis:
-  """Interacts with BigQuery to analyse data in the context of building ML models."""
+  """Interacts with BigQuery to analyse data in the context of building ML models.
+
+  Attributes:
+    tables: A pandas DataFrame with stats of tables in the BigQuery dataset.
+    params: Dict with configuration for analysis.
+    bq_utils: BigQueryUtils class with methods to manage BigQuery.
+  """
 
   def __init__(self, bq_utils: bigquery_utils.BigQueryUtils,
                params: _ParamsType):
     self.params = params
     self.bq_utils = bq_utils
+    self.tables = None
 
   def _update_params_with_defaults(self, params: _ParamsType):
     """Populates parameters not specified by the user with default values.
@@ -50,6 +57,7 @@ class Analysis:
     """
     params.setdefault('verbose', True)
     params.setdefault('dataset_description_sql', 'dataset_description.sql')
+    params.setdefault('table_stats_sql', 'table_stats')
 
   def get_ds_description(self) -> Tuple[pd.DataFrame, str]:
     """Queries information schema in BigQuery to get metadata of the dataset.
@@ -71,3 +79,42 @@ class Analysis:
       display(df_table_options)
       print(f'description: {description}')
     return (df_table_options, description)
+
+  def get_tables_stats(self) -> pd.DataFrame:
+    """Queries tables metadata to check structure of the data.
+
+    Returns:
+      self.tables: Dataframe with tables statistics (size, count etc).
+    """
+    self._update_params_with_defaults(self.params)
+    sql = utils.render_jinja_sql(
+        template_dir=_TEMPLATES_DIR,
+        template_name=self.params['table_stats_sql'],
+        **self.params)
+    self.tables = self.bq_utils.run_query(sql).to_dataframe()
+    # Create derived fields to use for filtering on the table type
+    self.tables['is_intraday'] = self.tables['table_id'].str.contains(
+        '_intraday_')
+    self.tables['table_type'] = self.tables['table_id'].apply(
+        lambda x: '_'.join(x.split('_')[:-1]))
+    self.tables['table_id_split'] = self.tables['table_id'].str.split('_')
+    self.tables['last_suffix'] = self.tables['table_id_split'].apply(
+        lambda x: x[-1])
+    return self.tables
+
+  def get_table_types(self) -> pd.DataFrame:
+    """Aggregates metrics on tables attributes.
+
+    Returns:
+      table_types: Aggregated stats per table type.
+    """
+    segments = ['table_type', 'is_intraday']
+    try:
+      table_types = self.tables.groupby(segments).agg({
+          'table_id': ['count'],
+          'size_gb': ['sum'],
+          'last_suffix': ['min', 'max']
+      })
+      return table_types
+    except (AttributeError, KeyError):
+      logging.error('Provide DataFrame containing %s', segments)
