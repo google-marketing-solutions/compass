@@ -27,6 +27,8 @@ data captured during a well-defined time window in the past (called
 
 ### Requirements
 
+#### Dataset
+
 In order to build a Propensity Model, one needs to prepare a dataset (CRM, GA360
 or Firebase) containing customers’ past behavioral data such as demographics,
 transactional or browsing behaviour over time. This data should include a
@@ -45,6 +47,18 @@ In GA360 dataset, an example of a `target` definition
 could be `hits.eCommerceAction.action_type = '6'`, which reflects a transaction.
 The user behaviour could be indicated by fields such as `totals.hits`,
 `totals.timeOnSite`, `trafficSource.source` and `device.deviceCategory` etc.
+
+#### Google Cloud Platform (GCP) permissions
+
+In order to run notebooks, user needs to have following permissions on GCP:
+
+- BigQuery User
+- Notebooks Legacy Admin
+- AutoML Editor
+- Service Usage Admin
+- Service Account User
+
+For more details refer to https://cloud.google.com/iam/docs/understanding-roles.
 
 ## How a propensity modeling problem can be translated into a Machine Learning (ML) problem?
 
