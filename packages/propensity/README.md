@@ -1,5 +1,16 @@
 # Propensity Modeling and Media Activation Notebooks
 
+**This is not an official Google product.**
+
+This repository contains multiple notebook packages (Propensity, Customer
+Lifetime Value (LTV), Forecasting etc.) for Marketing Data Scientists to
+optimize data science project workflow (ETL, feature engineering, modeling
+notebooks, automation scripts etc).
+
+Contributions are encouraged - see [CONTRIBUTING.md](../../CONTRIBUTING.md).
+
+## Overview
+
 This folder contains Python Notebook Templates for building an end-to-end
 Propensity Modeling solution using datasets like GA360, Firebase or CRM and
 use the propensity predictions to design, activate and measure the impact of a

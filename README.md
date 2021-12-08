@@ -9,5 +9,5 @@ notebooks, automation scripts etc).
 
 Contributions are encouraged - see [CONTRIBUTING.md](CONTRIBUTING.md).
 
-Ready to use packages:
+Available packages:
 - [Propensity](packages/propensity)
