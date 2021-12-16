@@ -12,5 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+absl-py>=1.0.0
 gps_building_blocks>=1.27.0,<=2.0
 lxml>=4.6.3,<=5.0
+plotly>=5.4.0
