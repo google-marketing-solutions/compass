@@ -12,12 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Source GCP configurations. This is READONLY GCP project
-# from where dataset is read and processed in the Destination GCP.
+# Source GCP configurations. This is the (possibly READONLY) GCP project
+# from where the original dataset is read. For example, following are the
+# parameter values for the Google Merchandize Store GA360 public dataset.
 source:
-  project_id: 'source_project_id'
-  dataset_name: 'source_dataset_name'
-  table_name: 'source_table_name'
+  project_id: 'bigquery-public-data'
+  dataset_name: 'google_analytics_sample'
+  table_name: 'ga_sessions_*'
 
 
 # Destination GCP configurations. This is working project where newly created
@@ -25,4 +26,3 @@ source:
 destination:
   project_id: 'destination_project_id'
   dataset_name: 'destination_dataset_name'
-  table_name: 'destination_table_name'
