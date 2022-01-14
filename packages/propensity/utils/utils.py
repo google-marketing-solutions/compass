@@ -37,7 +37,7 @@ class Configs:
   """Provides general configs for all Propensity Modeling Notebooks."""
   project_id: str
   dataset_name: str
-  table_name: str
+  table_name: str = 'None'
 
 
 def get_configs(filename: str) -> Union[Configs, Tuple[Configs, Configs]]:
@@ -73,8 +73,7 @@ def get_configs(filename: str) -> Union[Configs, Tuple[Configs, Configs]]:
   destination = contents['destination']
   destination_configs = Configs(
       project_id=destination['project_id'],
-      dataset_name=destination['dataset_name'],
-      table_name=destination['table_name'])
+      dataset_name=destination['dataset_name'])
   if source_configs is not None:
     return source_configs, destination_configs
   else:

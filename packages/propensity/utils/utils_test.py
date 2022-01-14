@@ -59,14 +59,13 @@ class UtilsTest(absltest.TestCase):
       destination:
         project_id: 'destination_project_id'
         dataset_name: 'destination_dataset_name'
-        table_name: 'destination_table_name'
     """
     mock_open = mock.mock_open(read_data=test_configs)
     with mock.patch('builtins.open', mock_open, create=True):
       dest_configs = utils.get_configs('configs.yaml')
 
     self.assertIsInstance(dest_configs, utils.Configs)
-    for attr in ['project_id', 'dataset_name', 'table_name']:
+    for attr in ['project_id', 'dataset_name']:
       self.assertTrue(hasattr(dest_configs, attr))
 
   def test_get_configs_raises_error_if_dest_values_not_provided(self):
@@ -78,7 +77,6 @@ class UtilsTest(absltest.TestCase):
       destination:
         project_id: ''
         dataset_name: ''
-        table_name: ''
     """
     mock_open = mock.mock_open(read_data=test_configs)
 
