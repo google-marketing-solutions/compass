@@ -49,7 +49,8 @@ OPTIONS(
   ,BUDGET_HOURS={{ budget_hours }}
 {% endif %}
 {% if data_split_col %}
-  ,DATA_SPLIT_COL={{ data_split_col }}
+  ,DATA_SPLIT_METHOD='CUSTOM'
+  ,DATA_SPLIT_COL='{{ data_split_col }}'
 {% endif %}
 ) AS
 SELECT

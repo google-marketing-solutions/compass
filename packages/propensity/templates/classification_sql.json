@@ -1,7 +1,7 @@
 {
   "model_path": "project.dataset.model",
   "model_type": "LOGISTIC_REG",
-  "auto_class_weights": "TRUE",
+  "data_split_col": "data_split",
   "feature_columns": [
     "col1",
     "col2",
