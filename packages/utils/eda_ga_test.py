@@ -1,4 +1,4 @@
-# Copyright 2021 Google LLC
+# Copyright 2022 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ from IPython.core import display
 import pandas as pd
 
 from gps_building_blocks.cloud.utils import bigquery as bigquery_utils
-from compass.packages.propensity.utils import eda_ga
+from compass.packages.utils import eda_ga
 
 _EDA_PARAMS = {
     'dataset': 'project.dataset.table',

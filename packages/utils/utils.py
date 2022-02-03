@@ -1,4 +1,4 @@
-# Copyright 2021 Google LLC
+# Copyright 2022 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -149,4 +149,3 @@ def generate_date_range_stats(timeseries: pd.Series) -> pd.DataFrame:
   df_summary = df_summary.T
   df_summary.columns = ['value']
   return df_summary
-
