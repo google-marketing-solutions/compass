@@ -1,0 +1,5 @@
+{
+  "model_path": "project.dataset.model",
+  "output_table_path": "project.dataset.scored",
+  "features_table_path": "project.dataset.table"
+}

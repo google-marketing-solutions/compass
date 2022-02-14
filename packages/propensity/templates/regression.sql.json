@@ -1,0 +1,20 @@
+{
+  "model_path": "project.dataset.model",
+  "model_type": "LINEAR_REG",
+  "l2_reg": 0.0001,
+  "max_iterations": 50,
+  "learn_rate_strategy": "LINE_SEARCH",
+  "early_stop": "TRUE",
+  "min_rel_progress": 0.001,
+  "data_split_method": "CUSTOM",
+  "data_split_col": "data_split",
+  "enable_global_explain": "TRUE",
+  "data_split_col": "data_split",
+  "feature_columns": [
+    "col1",
+    "col2",
+    "col3"
+  ],
+  "target_column": "label",
+  "features_table_path": "project.dataset.table"
+}
