@@ -1,4 +1,4 @@
-# Copyright 2021 Google LLC.
+# Copyright 2022 Google LLC.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,23 +23,14 @@
 #.  Ex: project.dataset.
 #
 # Output schema:
-#   project_id: STRING
-#   dataset_id: STRING
-#   table_id: STRING
-#   creation_time: TIMESTAMP
-#   last_modified_time: TIMESTAMP
-#   row_count: INTEGER
-#   size_bytes: INTEGER
-#   type: INTEGER
-#   size_mb: FLOAT
-#   size_gb: FLOAT
+#   table_catalog: STRING
+#   table_schema: STRING
+#   table_name: STRING
+#   option_name: STRING
+#   option_type: STRING
+#   option_value: STRING
 
 SELECT
-  *,
-  SAFE_DIVIDE(size_bytes, POW(10,6)) AS size_mb,
-  SAFE_DIVIDE(size_bytes,
-    POW(10,9)) AS size_gb
+      *
 FROM
-`{{dataset_path}}`.__TABLES__
-ORDER BY
-  table_id;
+`project.dataset`.INFORMATION_SCHEMA.TABLE_OPTIONS;

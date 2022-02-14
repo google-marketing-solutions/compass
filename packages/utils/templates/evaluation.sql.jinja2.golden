@@ -1,4 +1,4 @@
-# Copyright 2021 Google LLC.
+# Copyright 2022 Google LLC.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,10 +23,5 @@
 
 SELECT
   *
-FROM ML.EVALUATE(MODEL `{{ model_path }}`
-{% if eval_table_path %}
- ,(SELECT * FROM `{{ eval_table_path }}`),
-  {% if threshold %}
-   STRUCT({{ threshold }} AS threshold)
-  {% endif %}
-{% endif %});
+FROM ML.EVALUATE(MODEL `project.dataset.model`
+);

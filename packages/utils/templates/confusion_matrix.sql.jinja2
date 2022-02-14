@@ -1,4 +1,4 @@
-# Copyright 2021 Google LLC.
+# Copyright 2022 Google LLC.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,24 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# SQL Jinja template to produce multiple metrics for classification model.
-# These metrics include:
-#  - threshold
-#  - recall
-#  - false_positive_rate
-#  - true_positives
-#  - false_positives
-#  - true_negatives
-#  - false_negatives
+# SQL Jinja template to produce confusion matrix for classification model.
 #
 # Args:
 #  model_path: Full path to model in BigQuery. Ex: project.dataset.model.
 #  eval_table_path: Full path to evaluation table in BigQuery.
 
 SELECT
-  *,
-  true_positives / (true_positives + false_positives) AS precision
-FROM
-  ML.ROC_CURVE(MODEL `{{ model_path }}`,
-    TABLE `{{ eval_table_path }}`,
-    GENERATE_ARRAY(0.1, 0.8, 0.01));
+  *
+FROM ML.CONFUSION_MATRIX(MODEL `{{ model_path }}`,
+   (SELECT * FROM `{{ eval_table_path }}`));

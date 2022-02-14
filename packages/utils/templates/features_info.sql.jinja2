@@ -1,4 +1,4 @@
-# Copyright 2021 Google LLC.
+# Copyright 2022 Google LLC.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,13 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# SQL Jinja template to produce confusion matrix for classification model.
+# SQL Jinja template to extract features info form classification model.
 #
 # Args:
 #  model_path: Full path to model in BigQuery. Ex: project.dataset.model.
-#  eval_table_path: Full path to evaluation table in BigQuery.
 
 SELECT
   *
-FROM ML.CONFUSION_MATRIX(MODEL `{{ model_path }}`,
-   (SELECT * FROM `{{ eval_table_path }}`));
+FROM ML.FEATURE_INFO(MODEL `{{ model_path }}`);

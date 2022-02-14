@@ -1,0 +1,32 @@
+INFO:
+# Copyright 2022 Google LLC.
+# # Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# #     http://www.apache.org/licenses/LICENSE-2.0
+# # Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# # Description:
+# Sample SQL Jinja template to extract description of the dataset.
+# # Purpose:
+# Inspect metadata of the dataset.
+# # Args:
+#   dataset_path: Full path to BigQuery dataset with Google Analytics data.
+#. Ex: project.dataset. # # Output schema:
+#   project_id: STRING
+#   dataset_id: STRING
+#   table_id: STRING
+#   creation_time: TIMESTAMP
+#   last_modified_time: TIMESTAMP
+#   row_count: INTEGER
+#   size_bytes: INTEGER
+#   type: INTEGER
+
+SELECT *,
+       SAFE_DIVIDE(size_bytes, POW(10, 6)) AS size_mb,
+       SAFE_DIVIDE(size_bytes, POW(10, 9)) AS size_gb
+FROM `project.dataset`.__TABLES__
+ORDER BY table_id

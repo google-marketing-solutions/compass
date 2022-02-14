@@ -1,4 +1,4 @@
-# Copyright 2021 Google LLC.
+# Copyright 2022 Google LLC.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -38,18 +38,22 @@
 
 
 CREATE OR REPLACE MODEL
-  `project.dataset.model`
+  `{{ model_path }}`
 OPTIONS(
-  MODEL_TYPE='LOGISTIC_REG'
-  ,INPUT_LABEL_COLS=['label']
-
-
-
+  MODEL_TYPE='{{ model_type }}'
+  ,INPUT_LABEL_COLS=['{{ target_column }}']
+{% if auto_class_weights %}
+  ,AUTO_CLASS_WEIGHTS={{ auto_class_weights }}
+{% endif %}
+{% if model_type == 'AUTOML_CLASSIFIER' %}
+  ,BUDGET_HOURS={{ budget_hours }}
+{% endif %}
+{% if data_split_col %}
   ,DATA_SPLIT_METHOD='CUSTOM'
-  ,DATA_SPLIT_COL='data_split'
-
+  ,DATA_SPLIT_COL='{{ data_split_col }}'
+{% endif %}
 ) AS
 SELECT
-  col1, col2, col3, label
+  {{ feature_columns |join(', ') }}, {{ target_column }}
 FROM
-  `project.dataset.table`;
+  `{{ features_table_path }}`;
