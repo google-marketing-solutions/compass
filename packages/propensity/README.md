@@ -89,23 +89,23 @@ Assuming the data (CRM, Firebase or GA360) is already available as a BigQuery
 table, the following steps are involved in building and activating an
 end-to-end Propensity Modeling solution to drive a Google Marketing use case.
 
-1. Data audit and exploratory data analysis - [1.eda.ipynb](1.eda.ipynb).
-2. ML data preparation - [2.ml_data_preparation.ipynb](2.ml_data_preparation.ipynb).
-3. ML data preprocessing - [3.ml_data_preprocessing.ipynb](3.ml_data_preprocessing.ipynb).
-4. ML model training - [4.model_training.ipynb](4.model_training.ipynb).
-5. ML model evaluation and diagnostics - [5.model_evaluation_and_diagnostics.ipynb](5.model_evaluation_and_diagnostics.ipynb).
-6. Media experiment design - [6.media_experiment_design.ipynb](6.media_experiment_design.ipynb).
-7. Batch scoring - [7.batch_scoring.ipynb](7.batch_scoring.ipynb).
-8. Audience generation - [8.audience_generation.ipynb](8.audience_generation.ipynb).
-9. Audience upload - [8.audience_upload.ipynb](9.audience_upload.ipynb).
-10. Automated scoring and media activation - [Notebook - WIP].
-11. Post-campaign Analysis - [Notebook - WIP].
+1. Data audit and exploratory data analysis - [01.eda.ipynb](01.eda.ipynb).
+2. ML data preparation - [02.ml_data_preparation.ipynb](02.ml_data_preparation.ipynb).
+3. ML data preprocessing - [03.ml_data_preprocessing.ipynb](03.ml_data_preprocessing.ipynb).
+4. ML model training - [04.model_training.ipynb](04.model_training.ipynb).
+5. ML model evaluation and diagnostics - [05.model_evaluation_and_diagnostics.ipynb](05.model_evaluation_and_diagnostics.ipynb).
+6. Media experiment design - [06.media_experiment_design.ipynb](06.media_experiment_design.ipynb).
+7. Batch scoring - [07.batch_scoring.ipynb](07.batch_scoring.ipynb).
+8. Audience generation - [08.audience_generation.ipynb](08.audience_generation.ipynb).
+9. Audience upload - [09.audience_generation.ipynb](09.audience_generation.ipynb).
+10. Post-campaign Analysis - [10.post_campaign_analysis.ipynb](10.post_campaign_analysis.ipynb).
+11. Automated scoring and media activation - [Notebook - WIP].
 
 The following sections provide details of each step.
 
 ### 1. Data audit and exploratory data analysis
 
-Notebook - [1.eda.ipynb](1.eda.ipynb).
+Notebook - [01.eda.ipynb](01.eda.ipynb).
 
 <img src="images/step1_eda.png">
 
@@ -114,11 +114,12 @@ that the variables and values available for the required time period to
 create an ML model to solve the business problem at hand.
 
 This involves the following steps:
-TODO(): Add content after the Notebook is submitted
+* Extraction of the dataset schema and field descriptions
+* Explore data size and duration of the GA data tables
 
 ### 2. ML data preparation
 
-Notebook: [2.ml_data_preparation.ipynb](2.ml_data_preparation.ipynb).
+Notebook: [02.ml_data_preparation.ipynb](02.ml_data_preparation.ipynb).
 
 <img src="images/step2_ml_data_prep.png">
 
@@ -171,7 +172,7 @@ ML dataset and also visualize the generated ML data to further identify issues
 such as label leakage.
 
 This step consists of running the following sub steps as implemented in the
-[2.ml_data_preparation.ipynb](2.ml_data_preparation.ipynb):
+[02.ml_data_preparation.ipynb](2.ml_data_preparation.ipynb):
 
 
 * 2.1. MLWP Data Extraction pipeline: extracts and formats the original data from
@@ -213,24 +214,23 @@ training the model.
 
 ### 3. ML data preprocessing
 
-Notebook: [3.ml_data_preprocessing.ipynb](3.ml_data_preprocessing.ipynb).
+Notebook: [03.ml_data_preprocessing.ipynb](03.ml_data_preprocessing.ipynb).
 
 <img src="images/step3_ml_data_process.png">
 
-This step involves the following tasks
-TODO(): update when the Notebook is submitted:
+This step involves the following tasks:
 
 #### 3.1. Data splitting
 Once we are happy with the extracted ML-ready dataset, it can be separated into
 Training, Validation and Testing datasets as shown in the following diagram:
 
-TODO(): add a diagram on data splitting.
+<img src="images/step3_data_split.png">
 
-The ML examples extracted from the *development period* are divided into
+The ML examples extracted from the *model development period* are divided into
 *Training* (e.g. 80% of instances), *Validation* (e.g 10% of instances) and
 *Testing* (in-time) (e.g. 10% instances) partitions, such that each of these
 data partition contain a mutually exclusive random subset of instances. We
-called this dataset as *ML development dataset*. In addition to the in-time
+called this dataset as *Model Development* dataset. In addition to the in-time
 Testing dataset, an out-of-time Testing dataset is also created to specially
 test the model performance in recent times.
 
@@ -243,9 +243,9 @@ randomly doping the negative instances. While doing this we make sure to only
 balance the training dataset partition and keep the both validation and testing
 partitions in their original imbalance form.
 
-### 4. ML Model training
+### 4. ML model training
 
-Notebook: [4.model_training.ipynb](4.model_training.ipynb).
+Notebook: [04.model_training.ipynb](04.model_training.ipynb).
 
 <img src="images/step4_model_train.png">
 
@@ -256,15 +256,15 @@ option (by default), which uses GCP AutoML to automatically handles feature
 preprocessing and hyper-parameter tuning for multiple algorithms in parallel to
 train the best model with respect to a given performance metric such as AUC ROC.
 
-We use *ML development dataset* to crested in the previous step to develop the
+We use *Model Development* dataset to crested in the previous step to develop the
 model with the *Training*, *Validation* and *Testing* partitions. AutoML uses
 the *Training* and *Validation* partitions for hyper-parameter tuning and
 algorithm selection, and reports the final results on the *Testing* partition
-with the final model trained on the whole *ML development dataset*.
+with the final model trained on the whole *Model development* dataset.
 
 ### 5. Model evaluation and diagnostics.
 
-Notebook: [5.model_evaluation_and_diagnostics.ipynb](5.model_evaluation_and_diagnostics.ipynb).
+Notebook: [05.model_evaluation_and_diagnostics.ipynb](05.model_evaluation_and_diagnostics.ipynb).
 
 <img src="images/step5_model_eval.png">
 
@@ -300,7 +300,7 @@ TODO(): add a diagram of the above plots combined.
 
 ## 6. Media experiment design
 
-Notebook: [6.media_experiment_design.ipynb](6.media_experiment_design.ipynb).
+Notebook: [06.media_experiment_design.ipynb](06.media_experiment_design.ipynb).
 
 <img src="images/step6_media_experiment.png">
 
@@ -344,7 +344,7 @@ Test and Control cohorts from the top *X%* to implement the media experiment.
 
 ### 7. Batch scoring
 
-Notebook: [7.batch_scoring.ipynb](7.batch_scoring.ipynb).
+Notebook: [07.batch_scoring.ipynb](07.batch_scoring.ipynb).
 
 <img src="images/step7_batch_score.png">
 
@@ -355,30 +355,37 @@ predict their propensities. This step consists of the following sub steps:
 * Score the created instances using the developed model and uploaded the
   predictions into a table in GCP BigQuery
 
-### 9. Audience creation
+### 8. Audience generation
 
-TODO(): Update notebook details.
+Notebook: [08.audience_generation.ipynb](08.audience_generation.ipynb).
 
-### 8. Audience upload
+This step generates a propensity audience for a remarketing use case. It uses
+the propensity scores generated from the previous step to generate Test and
+Control audience groups for a remarketing campaign according to the sample sizes
+estimated in the step *6.Media experiment design*. The output of this steps is
+written to a new BigQuery table.
 
-Notebook: [9.audience_upload.ipynb](9.audience_upload.ipynb).
+### 9. Audience upload
+
+Notebook: [09.audience_upload.ipynb](09.audience_upload.ipynb).
 
 <img src="images/step9_audience_upload.png">
 
-This step first uses the propensity scores generated of the scored instances in
-Step 8 to create the audience groups according to the media experiment design
-generated in Step 6. Then it uploads these audiences to Google ad systems.
+This step uses [GMP and Google Ads Connector](https://github.com/GoogleCloudPlatform/cloud-for-marketing/tree/main/marketing-analytics/activation/gmp-googleads-connector#gmp-and-google-ads-connector) to upload the created propensity audience into Google
+Marketing Platform.
 
-The uploaded audiences could be activated as acquisition or remarketing
-campaigns in the selected Ad product (Search, Display and YT). If any control
-groups have been generated those are in BigQuery to be used at the analysis
-stage.
+The uploaded audiences could be activated as acquisition or remarketing (in this
+case) campaigns in the selected Google Ad product (Search, Display and YT). The
+control groups generated and saved in BigQuery to be used at the analysis stage.
 
-### 9. Automated scoring and media activation
+### 10. Post campaign analysis
 
-TODO(): Add content when the Notebook is submitted.
+Notebook: [10.post_campaign_analysis.ipynb](10.post_campaign_analysis.ipynb).
 
+This step analyses the results of a media campaign executed by using propensity
+audiences, that is, the comparison of conversion rates between Test and Control
+audience groups by using the appropriate statistical significance tests.
 
-### 10. Media experiment analysis
+### 11. Automated scoring and media activation
 
 TODO(): Add content when the Notebook is submitted.
