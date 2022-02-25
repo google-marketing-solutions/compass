@@ -172,7 +172,7 @@ ML dataset and also visualize the generated ML data to further identify issues
 such as label leakage.
 
 This step consists of running the following sub steps as implemented in the
-[02.ml_data_preparation.ipynb](2.ml_data_preparation.ipynb):
+[02.ml_data_preparation.ipynb](02.ml_data_preparation.ipynb):
 
 
 * 2.1. MLWP Data Extraction pipeline: extracts and formats the original data from
@@ -218,6 +218,7 @@ Notebook: [03.ml_data_preprocessing.ipynb](03.ml_data_preprocessing.ipynb).
 
 <img src="images/step3_ml_data_process.png">
 
+This notebook demonstrates the preparation of an already created ML dataset for model development. It is vital to split machine learning datasets in such a way that the model performance can be tuned and fairly assessed. This notebook shows an example of dividing a dataset into out-of-time TEST dataset (including selected full snapshot/s) and DEVELOPMENT dataset (randomly splitting the rest of the snapshots into TRAIN,VALIDATION and TEST). Those names are designed to be directly used in the AUTOML [DATA_SPLIT_COL](https://cloud.google.com/bigquery-ml/docs/reference/standard-sql/bigqueryml-syntax-create#split-inputs).
 This step involves the following tasks:
 
 #### 3.1. Data splitting
@@ -234,12 +235,12 @@ called this dataset as *Model Development* dataset. In addition to the in-time
 Testing dataset, an out-of-time Testing dataset is also created to specially
 test the model performance in recent times.
 
-#### 3.1. Data balancing
+#### 3.2. Data balancing
 
 If the percentage of positive examples in the dataset is < 1% and the number of
 positive examples are limited compared to the negative examples, it can be
 beneficial to balance training datasets to have ~1% of positive examples by
-randomly doping the negative instances. While doing this we make sure to only
+randomly dropping the negative instances. While doing this we make sure to only
 balance the training dataset partition and keep the both validation and testing
 partitions in their original imbalance form.
 
@@ -298,7 +299,7 @@ as label leakages)
 
 TODO(): add a diagram of the above plots combined.
 
-## 6. Media experiment design
+### [6. Media experiment design](#media-experiment-design)
 
 Notebook: [06.media_experiment_design.ipynb](06.media_experiment_design.ipynb).
 
@@ -359,10 +360,12 @@ predict their propensities. This step consists of the following sub steps:
 
 Notebook: [08.audience_generation.ipynb](08.audience_generation.ipynb).
 
+<img src="images/step8_audience_generation.png">
+
 This step generates a propensity audience for a remarketing use case. It uses
 the propensity scores generated from the previous step to generate Test and
 Control audience groups for a remarketing campaign according to the sample sizes
-estimated in the step *6.Media experiment design*. The output of this steps is
+estimated in the step [*6.Media experiment design*](#media-experiment-design). The output of this steps is
 written to a new BigQuery table.
 
 ### 9. Audience upload
