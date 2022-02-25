@@ -18,6 +18,7 @@ We are planning to enable extending it to firebase data format
 and other sources by modifying SQL templates.
 """
 import logging
+import os
 from typing import Dict, Tuple, Union
 
 from IPython.display import display
@@ -26,7 +27,8 @@ import pandas as pd
 from gps_building_blocks.cloud.utils import bigquery as bigquery_utils
 from gps_building_blocks.ml import utils
 
-_TEMPLATES_DIR = 'templates'
+_UTILS_DIR = os.path.dirname(os.path.abspath(__file__))
+_TEMPLATES_DIR = os.path.join(_UTILS_DIR, 'templates')
 
 _ParamsType = Dict[str, Union[int, float, str]]
 
