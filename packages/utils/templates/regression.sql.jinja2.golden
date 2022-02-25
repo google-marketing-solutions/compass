@@ -25,7 +25,7 @@
 #  max_iterations: The maximum number of training iterations or steps.
 #  learn_rate_strategy: The strategy for specifying the learning rate during training.
 #  early_stop: Whether training should stop if relative loss improvement is less
-    than the value specified for MIN_REL_PROGRESS.
+#    than the value specified for MIN_REL_PROGRESS.
 #  min_rel_progress: The minimum relative loss improvement that is necessary to
 #    continue training when EARLY_STOP is set to true.
 #  enable_global_explain: Whether to compute global explanations to evaluate
@@ -46,12 +46,12 @@ CREATE OR REPLACE MODEL
   `project.dataset.model`
 OPTIONS(
   MODEL_TYPE='LINEAR_REG',
-  L2_REG: 0.0001,
-  MAX_ITERATIONS: 50,
-  LEARN_RATE_STRATEGY: 'LINE_SEARCH',
-  EARLY_STOP: TRUE,
-  MIN_REL_PROGRESS: 0.001,
-  ENABLE_GLOBAL_EXPLAIN: TRUE,
+  L2_REG=0.0001,
+  MAX_ITERATIONS=50,
+  LEARN_RATE_STRATEGY='LINE_SEARCH',
+  EARLY_STOP=TRUE,
+  MIN_REL_PROGRESS=0.001,
+  ENABLE_GLOBAL_EXPLAIN=TRUE
 
 
   ,DATA_SPLIT_METHOD='CUSTOM'

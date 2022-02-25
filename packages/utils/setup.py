@@ -13,11 +13,8 @@
 # limitations under the License.
 """Setup script for utils module."""
 
-from setuptools import find_packages
-from setuptools import setup
+import setuptools
 
 VERSION = '0.1.0'
-setup(
-    name='utils',
-    version=VERSION,
-    packages=find_packages())
+setuptools.setup(
+    name='utils', version=VERSION, packages=setuptools.find_packages())

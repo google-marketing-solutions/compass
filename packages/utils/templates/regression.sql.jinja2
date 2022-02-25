@@ -25,7 +25,7 @@
 #  max_iterations: The maximum number of training iterations or steps.
 #  learn_rate_strategy: The strategy for specifying the learning rate during training.
 #  early_stop: Whether training should stop if relative loss improvement is less
-    than the value specified for MIN_REL_PROGRESS.
+#    than the value specified for MIN_REL_PROGRESS.
 #  min_rel_progress: The minimum relative loss improvement that is necessary to
 #    continue training when EARLY_STOP is set to true.
 #  enable_global_explain: Whether to compute global explanations to evaluate
@@ -46,12 +46,12 @@ CREATE OR REPLACE MODEL
   `{{ model_path }}`
 OPTIONS(
   MODEL_TYPE='{{ model_type | upper }}',
-  L2_REG: {{ l2_reg }},
-  MAX_ITERATIONS: {{ max_iterations }},
-  LEARN_RATE_STRATEGY: '{{ learn_rate_strategy | upper }}',
-  EARLY_STOP: {{ early_stop | upper }},
-  MIN_REL_PROGRESS: {{ min_rel_progress }},
-  ENABLE_GLOBAL_EXPLAIN: {{ enable_global_explain | upper }},
+  L2_REG={{ l2_reg }},
+  MAX_ITERATIONS={{ max_iterations }},
+  LEARN_RATE_STRATEGY='{{ learn_rate_strategy | upper }}',
+  EARLY_STOP={{ early_stop | upper }},
+  MIN_REL_PROGRESS={{ min_rel_progress }},
+  ENABLE_GLOBAL_EXPLAIN={{ enable_global_explain | upper }}
 {% if model_type == 'AUTOML_REGRESSOR' %}
   ,BUDGET_HOURS={{ budget_hours }}
 {% endif %}

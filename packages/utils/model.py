@@ -16,18 +16,19 @@
 import abc
 import enum
 import logging
+import os
 import sys
 from typing import Dict, List, Mapping, Optional, Union
 from IPython.core import display
 import pandas as pd
-
 from gps_building_blocks.cloud.utils import bigquery as bigquery_utils
 from gps_building_blocks.ml import utils
 
 logging.basicConfig(
     format='%(levelname)s: %(message)s', level=logging.INFO, stream=sys.stdout)
 
-_TEMPLATES_DIR = 'templates'
+_UTILS_DIR = os.path.dirname(os.path.abspath(__file__))
+_TEMPLATES_DIR = os.path.join(_UTILS_DIR, 'templates')
 _ParamsType = Mapping[str, Union[str, List[str], Mapping[str, str]]]
 
 
@@ -88,7 +89,7 @@ class Model(abc.ABC):
 
   def __init__(self, bq_utils: bigquery_utils.BigQueryUtils,
                params: _ParamsType):
-    self.params = params
+    self.params = {k.lower(): v for k, v in params.items()}
     self.bq_utils = bq_utils
 
   def _validate_columns(self, column: Union[str, List[str]]) -> None:
