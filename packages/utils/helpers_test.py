@@ -22,7 +22,7 @@ from matplotlib import pyplot
 from matplotlib.backends import backend_pdf
 import pandas as pd
 
-from compass.packages.utils import utils
+from compass.packages.utils import helpers
 
 
 class UtilsTest(absltest.TestCase):
@@ -48,7 +48,7 @@ class UtilsTest(absltest.TestCase):
     """
     mock_open = mock.mock_open(read_data=test_configs)
     with mock.patch('builtins.open', mock_open, create=True):
-      configs = utils.get_configs('configs.yaml')
+      configs = helpers.get_configs('configs.yaml')
 
     self.assertIsInstance(configs, types.SimpleNamespace)
     source_config, dest_config = configs.source, configs.destination
@@ -59,7 +59,7 @@ class UtilsTest(absltest.TestCase):
 
   def test_create_folder_returns_absolute_path(self):
     folder_name = 'test_folder'
-    actual_path = utils.create_folder(folder_name)
+    actual_path = helpers.create_folder(folder_name)
     expected_path = pathlib.Path(pathlib.Path.cwd(), folder_name)
     self.assertEqual(actual_path, expected_path)
 
@@ -67,7 +67,7 @@ class UtilsTest(absltest.TestCase):
     _, plots = pyplot.subplots(nrows=1, ncols=2)
     filename = 'test_plots.pdf'
 
-    utils.save_to_pdf(filename, plots)
+    helpers.save_to_pdf(filename, plots)
 
     self.mock_pdfpages.return_value.savefig.assert_called_once_with(
         plots[0].get_figure())
@@ -77,17 +77,17 @@ class UtilsTest(absltest.TestCase):
     plots = [[1, 2, 3]]
 
     with self.assertRaises(TypeError):
-      utils.save_to_pdf(filename, plots)
+      helpers.save_to_pdf(filename, plots)
 
   def test_generate_date_range_stats_raises_error_if_empty_series(self):
     timeseries = pd.Series([])
     with self.assertRaises(ValueError):
-      utils.generate_date_range_stats(timeseries)
+      helpers.generate_date_range_stats(timeseries)
 
   def test_generate_date_range_stats_raises_error_if_str_passed(self):
     timeseries = '20160801'
     with self.assertRaises(AttributeError):
-      utils.generate_date_range_stats(timeseries)
+      helpers.generate_date_range_stats(timeseries)
 
   def test_generate_date_range_stats_returns_correct_summary_all_days(self):
     expected = pd.DataFrame({
@@ -106,7 +106,7 @@ class UtilsTest(absltest.TestCase):
     })
     timeseries = pd.Series(
         ['20160801', '20160802', '20160803', '20160804', '20160805'])
-    actual = utils.generate_date_range_stats(timeseries)
+    actual = helpers.generate_date_range_stats(timeseries)
     # Added check_like to ignore undeterministic order of the index
     # due to using dict in the data set up.
     pd.testing.assert_frame_equal(actual, expected, check_like=True)
@@ -127,7 +127,7 @@ class UtilsTest(absltest.TestCase):
         }
     })
     timeseries = pd.Series(['20160801', '20160803', '20160804', '20160805'])
-    actual = utils.generate_date_range_stats(timeseries)
+    actual = helpers.generate_date_range_stats(timeseries)
     # Added check_like to ignore undeterministic order of the index
     # due to using dict in the data set up.
     pd.testing.assert_frame_equal(actual, expected, check_like=True)

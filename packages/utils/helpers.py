@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Propensity model custom utility functions."""
+"""Propensity model custom helper functions."""
 
 import json
 import logging
