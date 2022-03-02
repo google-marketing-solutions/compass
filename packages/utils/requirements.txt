@@ -16,3 +16,10 @@ absl-py>=1.0.0
 gps_building_blocks>=1.27.0,<=2.0
 lxml>=4.6.3,<=5.0
 plotly>=5.4.0
+pydata-google-auth
+google-auth
+google-auth-oauthlib
+google-cloud-bigquery
+google-cloud-bigquery-storage
+db-dtypes
+pandas-gbq>=0.17
