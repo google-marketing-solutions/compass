@@ -38,5 +38,5 @@ AS (
     ON
       WindowFeatures.user_id = CrmFeatures.{crm_user_id}
       AND WindowFeatures.snapshot_ts = TIMESTAMP(CrmFeatures.{crm_snapshot_ts})
-  WHERE CrmFeatures.snapshot_ts BETWEEN {crm_data_date_start} AND {crm_data_date_end}
+  WHERE CrmFeatures.{crm_snapshot_ts} BETWEEN {crm_data_date_start} AND {crm_data_date_end}
 );
