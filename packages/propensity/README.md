@@ -100,6 +100,7 @@ end-to-end Propensity Modeling solution to drive a Google Marketing use case.
 9. Audience upload - [09.audience_generation.ipynb](09.audience_generation.ipynb).
 10. Post-campaign Analysis - [10.post_campaign_analysis.ipynb](10.post_campaign_analysis.ipynb).
 11. Automated scoring and media activation - [Notebook - WIP].
+12. Cleanup BigQuery artifacts - [12.cleanup.ipynb](12.cleanup.ipynb).
 
 The following sections provide details of each step.
 
@@ -392,3 +393,9 @@ audience groups by using the appropriate statistical significance tests.
 ### 11. Automated scoring and media activation
 
 TODO(): Add content when the Notebook is submitted.
+
+
+### 12. Cleanup BigQuery artifacts
+
+This step helps to clean up interim tables generated while executing notebooks
+from 01 to 09.
