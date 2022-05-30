@@ -26,3 +26,9 @@ source:
 destination:
   project_id: 'destination_project_id'
   dataset_name: 'destination_dataset_name'
+
+
+# Run ID to track multiple training and scoring runs
+run_id:
+  train: '01'
+  score: '01'
