@@ -42,6 +42,7 @@ CREATE OR REPLACE MODEL
 OPTIONS(
   MODEL_TYPE='{{ model_type }}'
   ,INPUT_LABEL_COLS=['{{ target_column }}']
+  ,ENABLE_GLOBAL_EXPLAIN={{ enable_global_explain }}
 {% if auto_class_weights %}
   ,AUTO_CLASS_WEIGHTS={{ auto_class_weights }}
 {% endif %}
