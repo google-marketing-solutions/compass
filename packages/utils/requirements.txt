@@ -13,14 +13,15 @@
 # limitations under the License.
 
 absl-py>=1.0.0
-gps_building_blocks>=1.27.0,<=2.0
-lxml>=4.6.3,<=5.0
-plotly>=5.4.0
-pydata-google-auth
+db-dtypes
 google-auth
 google-auth-oauthlib
 google-cloud-bigquery
 google-cloud-bigquery-storage
-db-dtypes
+gps_building_blocks>=1.27.0,<=2.0
+lxml>=4.6.3,<=5.0
+markupsafe==2.0.1
 pandas-gbq>=0.17
+plotly>=5.4.0
+pydata-google-auth
 scikit-learn>=1.0.2
