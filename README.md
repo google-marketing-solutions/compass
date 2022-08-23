@@ -10,4 +10,5 @@ notebooks, automation scripts etc).
 Contributions are encouraged - see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 Available packages:
-- [Propensity](packages/propensity)
+- [Propensity modeling](packages/propensity)
+- [LTV modeling](packages/ltv)
