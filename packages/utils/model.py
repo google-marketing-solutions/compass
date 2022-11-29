@@ -241,7 +241,7 @@ class LTVModel(Model):
     self.bq_utils.run_query(sql)
     self._display_model_url()
 
-  def evaluate(self,
+  def evaluate(self,# overriding-default-value-checks
                params: Optional[Mapping[str, Union[str, float]]] = None,
                verbose: bool = False) -> pd.DataFrame:
     """Evaluates BigQuery ML trained regression model.
@@ -319,7 +319,7 @@ class PropensityModel(Model):
     self.bq_utils.run_query(sql)
     self._display_model_url()
 
-  def evaluate(self,
+  def evaluate(self,# overriding-default-value-checks
                params: Optional[Mapping[str, Union[str, float]]] = None,
                verbose: bool = False) -> List[pd.DataFrame]:
     """Evaluates BigQuery ML trained model.
