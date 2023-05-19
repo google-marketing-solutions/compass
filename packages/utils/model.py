@@ -267,7 +267,7 @@ class LTVModel(Model):
         **eval_params)
     return self.bq_utils.run_query(sql).to_dataframe()
 
-  def predict(self,
+  def predict(self,# overriding-parameter-count-checks
               params: Dict[str, Union[str, float]],
               overwrite_table: Optional[bool] = True,
               verbose: Optional[bool] = False) -> None:
@@ -348,7 +348,7 @@ class PropensityModel(Model):
       eval_dataframes.append(dataframe)
     return eval_dataframes
 
-  def predict(self,
+  def predict(self,# overriding-parameter-count-checks
               params: Dict[str, Union[str, float]],
               overwrite_table: Optional[bool] = True,
               verbose: Optional[bool] = False) -> None:
