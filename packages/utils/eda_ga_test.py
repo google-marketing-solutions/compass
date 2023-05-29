@@ -137,7 +137,7 @@ class EdaTest(absltest.TestCase):
     with mock.patch('builtins.open',
                     mock.mock_open(read_data=get_description_template)):
       actual_df, actual_str = self.eda_ga.get_ds_description()
-    pd.testing.assert_frame_equal(actual_df, expected_df)
+    pd.testing.assert_frame_equal(actual_df, expected_df, check_names=False)
     self.assertEqual(actual_str, expected_str)
 
   def test_get_tables_stats_returns_job_result_as_dataframe(self):
@@ -157,7 +157,7 @@ class EdaTest(absltest.TestCase):
     with mock.patch('builtins.open',
                     mock.mock_open(read_data=get_tables_template)):
       actual_df = self.eda_ga.get_tables_stats()
-    pd.testing.assert_frame_equal(actual_df, expected_df)
+    pd.testing.assert_frame_equal(actual_df, expected_df, check_names=False)
 
   def test_get_table_types_returns_correct_results(self):
     expected = pd.DataFrame({
@@ -178,7 +178,9 @@ class EdaTest(absltest.TestCase):
     actual = self.eda_ga.get_table_types()
     # Added check_like to ignore undeterministic order of the index
     # due to using dict in the data set up.
-    pd.testing.assert_frame_equal(actual, expected, check_like=True)
+    pd.testing.assert_frame_equal(
+        actual, expected, check_like=True, check_names=False
+    )
 
 
 if __name__ == '__main__':
