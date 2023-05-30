@@ -222,7 +222,7 @@ class Model(abc.ABC):
 class LTVModel(Model):
   """Interacts with BigQuery ML to create and evaluate LTV models."""
 
-  def train(self, verbose: bool = False) -> None:
+  def train(self, verbose: bool = False) -> None:# typed-pandas
     """Trains regression model in BigQuery ML.
 
     Args:
@@ -300,7 +300,7 @@ class LTVModel(Model):
 class PropensityModel(Model):
   """Interacts with BigQuery ML to train, evaluate and predict."""
 
-  def train(self, verbose: bool = False) -> None:
+  def train(self, verbose: bool = False) -> None:# typed-pandas
     """Trains propensity model in BigQuery ML.
 
     Args:

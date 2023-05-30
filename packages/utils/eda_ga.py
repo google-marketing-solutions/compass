@@ -119,4 +119,4 @@ class Analysis:
       })
       return table_types
     except (AttributeError, KeyError):
-      logging.error('Provide DataFrame containing %s', segments)
+      logging.error('Provide DataFrame containing %s', segments)# typed-pandas
