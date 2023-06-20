@@ -22,4 +22,4 @@ cd ../utils
 pip install --no-deps --require-hashes -r requirements.txt
 
 # Install Compass specific utility modules
-pip install -e .
+pip install --no-deps --no-index -e .
