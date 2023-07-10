@@ -97,7 +97,7 @@ end-to-end Propensity Modeling solution to drive a Google Marketing use case.
 6. Media experiment design - [06.media_experiment_design.ipynb](06.media_experiment_design.ipynb).
 7. Batch scoring - [07.batch_scoring.ipynb](07.batch_scoring.ipynb).
 8. Audience generation - [08.audience_generation.ipynb](08.audience_generation.ipynb).
-9. Audience upload - [09.audience_generation.ipynb](09.audience_generation.ipynb).
+9. Audience upload - [09.audience_upload.ipynb](09.audience_upload.ipynb).
 10. Post-campaign Analysis - [10.post_campaign_analysis.ipynb](10.post_campaign_analysis.ipynb).
 11. Automated scoring and media activation - [Notebook - WIP].
 12. Cleanup BigQuery artifacts - [12.cleanup.ipynb](12.cleanup.ipynb).
