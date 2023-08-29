@@ -104,7 +104,7 @@ class Analysis:
         lambda x: x[-1])
     return self.tables
 
-  def get_table_types(self) -> pd.DataFrame:
+  def get_table_types(self) -> pd.DataFrame | None:
     """Aggregates metrics on tables attributes.
 
     Returns:
@@ -119,4 +119,4 @@ class Analysis:
       })
       return table_types
     except (AttributeError, KeyError):
-      logging.error('Provide DataFrame containing %s', segments)# typed-pandas
+      logging.error('Provide DataFrame containing %s', segments)
