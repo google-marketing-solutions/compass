@@ -162,7 +162,7 @@ class Model(abc.ABC):
     return {key: value for key, value in self.params.items()}
 
   @abc.abstractmethod
-  def train(self, verbose: bool = False) -> pd.DataFrame:
+  def train(self, verbose: bool = False) -> None:
     """Trains BigQuery ML.
 
     Args:
@@ -222,7 +222,7 @@ class Model(abc.ABC):
 class LTVModel(Model):
   """Interacts with BigQuery ML to create and evaluate LTV models."""
 
-  def train(self, verbose: bool = False) -> None:# typed-pandas
+  def train(self, verbose: bool = False) -> None:
     """Trains regression model in BigQuery ML.
 
     Args:
@@ -300,7 +300,7 @@ class LTVModel(Model):
 class PropensityModel(Model):
   """Interacts with BigQuery ML to train, evaluate and predict."""
 
-  def train(self, verbose: bool = False) -> None:# typed-pandas
+  def train(self, verbose: bool = False) -> None:
     """Trains propensity model in BigQuery ML.
 
     Args:
