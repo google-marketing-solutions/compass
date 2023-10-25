@@ -104,11 +104,15 @@ class Analysis:
         lambda x: x[-1])
     return self.tables
 
-  def get_table_types(self) -> pd.DataFrame | None:
+  def get_table_types(self) -> pd.DataFrame:
     """Aggregates metrics on tables attributes.
 
     Returns:
       table_types: Aggregated stats per table type.
+
+    Raises:
+      AttributeError: If data type does not match the aggregation.
+      KeyError: If column name for segments does not exist.
     """
     segments = ['table_type', 'is_intraday']
     try:
@@ -120,3 +124,4 @@ class Analysis:
       return table_types
     except (AttributeError, KeyError):
       logging.error('Provide DataFrame containing %s', segments)
+      raise
