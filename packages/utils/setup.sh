@@ -19,7 +19,10 @@ set -e
 # Change directory to utils
 cd ../utils
 # Install external library dependencies
-pip install --no-deps --require-hashes -r requirements.txt
+pip install --user --no-deps --require-hashes -r requirements.txt
 
 # Install Compass specific utility modules
 pip install --no-deps --no-index -e .
+
+# Downgrade MarkupSafe to avoid "cannot import name 'soft_unicode' from 'markupsafe'"
+pip install --user --force-reinstall MarkupSafe==2.0.1
