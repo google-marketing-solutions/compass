@@ -1,5 +1,4 @@
-# coding=utf-8
-# Copyright 2023 Google LLC.
+# Copyright 2024 Google LLC.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,17 +11,4 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-#!/bin/bash
-set -e
-
-# Change directory to utils
-cd ../utils
-# Install external library dependencies
-pip install --user --no-deps --require-hashes -r requirements.txt
-
-# Install Compass specific utility modules
-pip install --no-deps --no-index -e .
-
-# Downgrade MarkupSafe to avoid "cannot import name 'soft_unicode' from 'markupsafe'"
-pip install --user --force-reinstall --require-hashes -r requirements.markupsafe.txt
+markupsafe==2.0.1
