@@ -1927,9 +1927,9 @@ looker-sdk==24.2.0 \
     --hash=sha256:51022762eae9df7c3e64458c4f1945f6030378aa75ed4a2ef6b965007466ec91 \
     --hash=sha256:714a550a42e6b8d8b3f42e6119a8559445b415d3837bac692fbfd9c400d9203f
     # via apache-airflow-providers-google
-mako==1.3.2 \
-    --hash=sha256:2a0c8ad7f6274271b3bb7467dd37cf9cc6dab4bc19cb69a4ef10669402de698e \
-    --hash=sha256:32a99d70754dfce237019d17ffe4a282d2d3351b9c476e90d8a60e63f133b80c
+mako==1.3.12 \
+    --hash=sha256:8f61569480282dbf557145ce441e4ba888be453c30989f879f0d652e39f53ea9 \
+    --hash=sha256:9f778e93289bd410bb35daadeb4fc66d95a746f0b75777b942088b7fd7af550a
     # via alembic
 markdown==3.5.2 \
     --hash=sha256:d43323865d89fc0cb9b20c75fc8ad313af307cc087e84b657d9eec768eddeadd \
